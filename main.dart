@@ -45,32 +45,97 @@ class MyAppState extends ChangeNotifier {
     current = WordPair.random(); // Mengisi var current dengan kata random baru
     notifyListeners();
   }
+
+  var favorites = <WordPair>[];
+
+  void toggleFavorite() {
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+    } else {
+      favorites.add(current);
+    }
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var pair = appState.current;
+
+    IconData icon;
+    if (appState.favorites.contains(pair)) {
+      icon = Icons.favorite;
+    } else {
+      icon = Icons.favorite_border;
+    }
 
     return Scaffold(
       // base (Canvas) dari layout
-      body: Column(
-        // Di atas scaffold ada body. Body nya, diberi kolom
-        children: [
-          // di dalam kolom, diberi teks
-          Text('A random idea:'),
-          Text(appState.current
-              .asLowerCase), // Mengambil random yecy dari appState pada variabel WordPair Current, lalu diubah menjadi huruf keil demua dan ditampilkan sebagai teks
+      body: Center(
+        child: Column(
+          // Di atas scaffold ada body. Body nya, diberi kolom
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // di dalam kolom, diberi teks
+            Text('A random idea:'),
+            BigCard(
+                pair:
+                    pair), // Mengambil random yecy dari appState pada variabel WordPair Current, lalu diubah menjadi huruf keil demua dan ditampilkan sebagai teks
+            SizedBox(height: 10),
+            // Membuat button timbul didalam body
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    appState.toggleFavorite();
+                  },
+                  icon: Icon(icon),
+                  label: Text('Like'),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  // Fungsi yang dieksekusi ketika button ditekan
+                  onPressed: () {
+                    appState.getNext(); // Menjalankan fungsi getNext
+                  },
+                  child: Text('Next'), // Menampilkan teks Next didalam button
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-          // Membuat button timbul didalam body
-          ElevatedButton(
-            // Fungsi yang dieksekusi ketika button ditekan
-            onPressed: () {
-              appState.getNext(); // Menjalankan fungsi getNext
-            },
-            child: Text('Next'), // Menampilkan teks Next didalam button
-          ),
-        ],
+class BigCard extends StatelessWidget {
+  const BigCard({
+    super.key,
+    required this.pair,
+  });
+
+  final WordPair pair;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final style = theme.textTheme.displayMedium!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+
+    return Card(
+      color: theme.colorScheme.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Text(
+          pair.asLowerCase,
+          style: style,
+          semanticsLabel: "${pair.first} ${pair.second}",
+        ),
       ),
     );
   }
