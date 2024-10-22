@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
 
 // Mendefinisikan isi MyAppState
 class MyAppState extends ChangeNotifier {
-  // State MyAppState diisi dengan 2 kata random yang digabung. Kata random tsb disimpan dalam variable WordPair
+  // State MyAppState diisi dengan 2 kata random yang digabung. Kata random tsb disimpan dalam variable current
   var current = WordPair.random();
 
   // Mendefinisikan fungsi getNext
@@ -62,7 +62,8 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var pair = appState.current;
+    var pair = appState
+        .current; // variabel pair menyimpan kata yang sedang tampil/aktif
 
     IconData icon;
     if (appState.favorites.contains(pair)) {
@@ -82,7 +83,7 @@ class MyHomePage extends StatelessWidget {
             Text('A random idea:'),
             BigCard(
                 pair:
-                    pair), // Mengambil random yecy dari appState pada variabel WordPair Current, lalu diubah menjadi huruf keil demua dan ditampilkan sebagai teks
+                    pair), // Mengambil nilai dari variabel pair, lalu diubah menjadi huruf kecil semua dan ditampilkan sebagai teks
             SizedBox(height: 10),
             // Membuat button timbul didalam body
             Row(
@@ -113,6 +114,7 @@ class MyHomePage extends StatelessWidget {
 }
 
 class BigCard extends StatelessWidget {
+  // Widget BigCard
   const BigCard({
     super.key,
     required this.pair,
@@ -128,9 +130,11 @@ class BigCard extends StatelessWidget {
     );
 
     return Card(
-      color: theme.colorScheme.primary,
+      // Membungkus padding dalam widget Card
+      color: theme.colorScheme.primary, // menambahkan warna pada card
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding:
+            const EdgeInsets.all(20), // Memberi jarak padding diantara teks
         child: Text(
           pair.asLowerCase,
           style: style,
